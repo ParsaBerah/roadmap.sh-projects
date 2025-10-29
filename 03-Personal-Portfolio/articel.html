@@ -15,27 +15,40 @@
     <meta property="og:image" content="https://parsaberah.ir/Assets/Profile.jpg">
     <meta property="og:type" content="Website">
     <meta property="og:url" content="https://parsaberah.ir">
+    <!-- Google Fonts + stylesheet -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
     <header>
-        <div>
-            <img width="64" src="/assets/logo.jpg" alt="Parsa Berahman">
-            <span>Parsa Berahman</span>
+        <div class="container">
+            <div class="logo">
+                <img width="64" src="/assets/logo.jpg" alt="Parsa Berahman">
+                <span>Parsa Berahman</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="projects.html">Projects</a></li>
+                    <li><a href="articles.html">Articles</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
         </div>
-        <nav>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="projects.html">Projects</a></li>
-                <li><a href="articles.html">Articles</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-        </nav>
-    </header>`
+    </header>
 
-    <main>
-        <section class="articles">
+    <main class="container">
+        <section class="hero">
             <h1>Design Articles & Insights</h1>
+            <p>Explore my thoughts on UI/UX design, best practices, and industry trends.</p>
+        </section>
+
+        <section class="articles">
             <ul>
                 <li>
                     <h2><a href="article1.html">Cognitive Load in UX Design: Strategies for Simplicity</a></h2>
@@ -72,10 +85,12 @@
     </main>
 
     <footer>
-        <p>&copy; All rights reserved 2025 | Parsa Berahman</p>
-        <address>
-            Contact: <a href="mailto:parsaberahman18@gmail.com">parsaberahman18@gmail.com</a>
-        </address>
+        <div class="container">
+            <p>&copy; All rights reserved 2025 | Parsa Berahman</p>
+            <address>
+                Contact: <a href="mailto:parsaberahman18@gmail.com">parsaberahman18@gmail.com</a>
+            </address>
+        </div>
     </footer>
 </body>
 
