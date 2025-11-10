@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Changelog Component</title>
+  <style>
+    :root {
+      --bg: #0b0c10;
+      --card: #111218;
+      --text: #e6e7eb;
+      --muted: #a6a8b3;
+      --border: #1b1d27;
+      --accent: #7c5cff;
+      --added: #22c55e;   /* green */
+      --fixed: #eab308;   /* amber */
+      --improved: #38bdf8;/* sky */
+      --security: #ef4444;/* red */
+      --shadow: 0 8px 30px rgba(0,0,0,.35);
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f6f7fb;
+        --card: #ffffff;
+        --text: #0f1222;
+        --muted: #6b7280;
+        --border: #e9eaf0;
+        --shadow: 0 10px 30px rgba(0,0,0,.08);
+      }
+    }
+
+    /* Page framing (not required for the component itself) */
+    body {
+      margin: 0; padding: 32px; background: var(--bg); color: var(--text);
+      font: 500 16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      display: grid; place-items: start center; min-height: 100svh;
+    }
+
+    .changelog {
+      width: min(900px, 100%);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      overflow: clip;
+    }
+
+    .changelog__header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+      padding: clamp(16px, 3vw, 28px) clamp(16px, 4vw, 32px);
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, color-mix(in oklch, var(--accent) 18%, transparent) 0%, transparent 65%);
+    }
+
+    .changelog__title { margin: 0; font-size: clamp(20px, 2vw, 24px); letter-spacing: .2px; }
+    .changelog__subtitle { margin: 4px 0 0; color: var(--muted); font-weight: 500; font-size: 14px; }
+
+    .changelog__filters { display: flex; gap: 8px; flex-wrap: wrap; }
+    .pill {
+      border: 1px solid var(--border);
+      background: color-mix(in oklch, var(--card) 80%, #000 20%);
+      padding: 6px 10px; border-radius: 999px; color: var(--muted);
+      font-size: 12px; letter-spacing: .2px;
+    }
+
+    .changelog__list { list-style: none; margin: 0; padding: 0; position: relative; }
+    /* Timeline rail */
+    .changelog__list::before {
+      content: ""; position: absolute; inset: 0 auto 0 178px;
+      width: 2px; background: var(--border);
+    }
+
+    .entry { display: grid; grid-template-columns: 160px 1fr; gap: 24px; padding: 22px clamp(16px, 4vw, 32px); }
+    .entry + .entry { border-top: 1px solid var(--border); }
+
+    .entry__date {
+      position: relative; justify-self: end; text-align: right; min-width: 160px;
+      color: var(--muted); font-weight: 600; letter-spacing: .3px;
+    }
+    .entry__date time { display: inline-block; padding: 6px 10px; border-radius: 999px; border: 1px solid var(--border); }
+
+    /* Dot connecting to the rail */
+    .entry__date::after {
+      content: ""; position: absolute; right: -14px; top: 50%; translate: 0 -50%;
+      width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px color-mix(in oklch, var(--accent) 25%, transparent);
+    }
+
+    .entry__content { display: grid; gap: 8px; align-content: start; }
+
+    .entry__heading { display: flex; gap: 12px; align-items: center; }
+    .entry__title { margin: 0; font-size: 16px; }
+
+    .tag { font-size: 11px; font-weight: 700; letter-spacing: .3px; text-transform: uppercase; padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); }
+    .tag.added { background: color-mix(in oklch, var(--added) 20%, transparent); color: color-mix(in oklch, var(--added) 90%, white 10%); }
+    .tag.fixed { background: color-mix(in oklch, var(--fixed) 20%, transparent); color: color-mix(in oklch, var(--fixed) 90%, white 10%); }
+    .tag.improved { background: color-mix(in oklch, var(--improved) 20%, transparent); color: color-mix(in oklch, var(--improved) 90%, white 10%); }
+    .tag.security { background: color-mix(in oklch, var(--security) 20%, transparent); color: color-mix(in oklch, var(--security) 90%, white 10%); }
+
+    .entry__body { margin: 0; color: var(--muted); }
+
+    .entry__meta { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; color: var(--muted); font-size: 13px; }
+    .badge { padding: 3px 8px; border-radius: 999px; border: 1px solid var(--border); }
+
+    /* Responsive – stack date on top on small screens */
+    @media (max-width: 700px) {
+      .changelog__list::before { left: 16px; }
+      .entry { grid-template-columns: 1fr; padding-left: 22px; }
+      .entry__date { justify-self: start; text-align: left; min-width: 0; }
+      .entry__date::after { left: -17px; right: auto; }
+    }
+  </style>
+</head>
+<body>
+  <section class="changelog" aria-labelledby="changelog-title">
+    <header class="changelog__header">
+      <div>
+        <h1 id="changelog-title" class="changelog__title">Changelog</h1>
+        <p class="changelog__subtitle">Latest updates and improvements</p>
+      </div>
+      <nav class="changelog__filters" aria-label="Filters (visual only)">
+        <span class="pill">All</span>
+        <span class="pill">Added</span>
+        <span class="pill">Fixed</span>
+        <span class="pill">Improved</span>
+        <span class="pill">Security</span>
+      </nav>
+    </header>
+
+    <ol class="changelog__list">
+      <li class="entry">
+        <div class="entry__date"><time datetime="2025-11-05">Nov 5, 2025</time></div>
+        <div class="entry__content">
+          <div class="entry__heading">
+            <h3 class="entry__title">Launch: Project Spaces</h3>
+            <span class="tag added" aria-label="Added">Added</span>
+            <span class="badge">v2.3.0</span>
+          </div>
+          <p class="entry__body">Introduced collaborative spaces for teams with role-based access, quick member invites, and activity timelines.</p>
+          <div class="entry__meta">
+            <span>Docs updated</span>
+            <span class="badge">UI</span>
+            <span class="badge">Backend</span>
+          </div>
+        </div>
+      </li>
+
+      <li class="entry">
+        <div class="entry__date"><time datetime="2025-11-02">Nov 2, 2025</time></div>
+        <div class="entry__content">
+          <div class="entry__heading">
+            <h3 class="entry__title">Faster search indexing</h3>
+            <span class="tag improved" aria-label="Improved">Improved</span>
+            <span class="badge">v2.2.4</span>
+          </div>
+          <p class="entry__body">Reduced indexing latency by ~40% and added synonym support for common queries.</p>
+          <div class="entry__meta">
+            <span>Perf</span>
+            <span class="badge">Search</span>
+          </div>
+        </div>
+      </li>
+
+      <li class="entry">
+        <div class="entry__date"><time datetime="2025-10-28">Oct 28, 2025</time></div>
+        <div class="entry__content">
+          <div class="entry__heading">
+            <h3 class="entry__title">Authentication patch</h3>
+            <span class="tag fixed" aria-label="Fixed">Fixed</span>
+            <span class="badge">v2.2.3</span>
+          </div>
+          <p class="entry__body">Resolved an issue causing intermittent sign-in failures for accounts with legacy 2FA settings.</p>
+          <div class="entry__meta">
+            <span>Stability</span>
+            <span class="badge">Auth</span>
+          </div>
+        </div>
+      </li>
+
+      <li class="entry">
+        <div class="entry__date"><time datetime="2025-10-20">Oct 20, 2025</time></div>
+        <div class="entry__content">
+          <div class="entry__heading">
+            <h3 class="entry__title">Dependency bumps</h3>
+            <span class="tag security" aria-label="Security">Security</span>
+            <span class="badge">v2.2.0</span>
+          </div>
+          <p class="entry__body">Upgraded core libraries to address CVE advisories and tightened CSP defaults.</p>
+          <div class="entry__meta">
+            <span>Security hardening</span>
+            <span class="badge">CSP</span>
+          </div>
+        </div>
+      </li>
+    </ol>
+  </section>
+</body>
+</html>
